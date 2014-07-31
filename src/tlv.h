@@ -22,10 +22,10 @@
 #define __TLV_H__
 
 typedef struct s_OtrlTLV {
-    unsigned short type;
-    unsigned short len;
-    unsigned char *data;
-    struct s_OtrlTLV *next;
+  unsigned short type;
+  unsigned short len;
+  unsigned char *data;
+  struct s_OtrlTLV *next;
 } OtrlTLV;
 
 /* TLV types */
@@ -55,7 +55,7 @@ typedef struct s_OtrlTLV {
 
 /* Make a single TLV, copying the supplied data */
 OtrlTLV *otrl_tlv_new(unsigned short type, unsigned short len,
-	const unsigned char *data);
+                      const unsigned char *data);
 
 /* Construct a chain of TLVs from the given data */
 OtrlTLV *otrl_tlv_parse(const unsigned char *serialized, size_t seriallen);

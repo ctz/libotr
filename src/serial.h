@@ -28,18 +28,18 @@
 #include <stdio.h>
 
 #define debug_data(t,b,l) do { const unsigned char *data = (b); size_t i; \
-	fprintf(stderr, "%s: ", (t)); \
-	for(i=0;i<(l);++i) { \
-	    fprintf(stderr, "%02x", data[i]); \
-	} \
-	fprintf(stderr, "\n"); \
-    } while(0)
+    fprintf(stderr, "%s: ", (t)); \
+    for(i=0;i<(l);++i) { \
+      fprintf(stderr, "%02x", data[i]); \
+    } \
+    fprintf(stderr, "\n"); \
+  } while(0)
 
 #define debug_int(t,b) do { const unsigned char *data = (b); \
-	unsigned int v = \
-	    (((unsigned int)data[0]) << 24) | (data[1] << 16) | (data[2] << 8) | data[3]; \
-	fprintf(stderr, "%s: %u (0x%x)\n", (t), v, v); \
-    } while(0)
+    unsigned int v = \
+                     (((unsigned int)data[0]) << 24) | (data[1] << 16) | (data[2] << 8) | data[3]; \
+    fprintf(stderr, "%s: %u (0x%x)\n", (t), v, v); \
+  } while(0)
 
 #else
 #define debug_data(t,b,l)
@@ -47,61 +47,61 @@
 #endif
 
 #define write_int(x) do { \
-	bufp[0] = ((x) >> 24) & 0xff; \
-	bufp[1] = ((x) >> 16) & 0xff; \
-	bufp[2] = ((x) >> 8) & 0xff; \
-	bufp[3] = (x) & 0xff; \
-	bufp += 4; lenp -= 4; \
-    } while(0)
+    bufp[0] = ((x) >> 24) & 0xff; \
+    bufp[1] = ((x) >> 16) & 0xff; \
+    bufp[2] = ((x) >> 8) & 0xff; \
+    bufp[3] = (x) & 0xff; \
+    bufp += 4; lenp -= 4; \
+  } while(0)
 
 #define write_mpi(x,nx,dx) do { \
-	write_int(nx); \
-	gcry_mpi_print(format, bufp, lenp, NULL, (x)); \
-	debug_data((dx), bufp, (nx)); \
-	bufp += (nx); lenp -= (nx); \
-    } while(0)
+    write_int(nx); \
+    gcry_mpi_print(format, bufp, lenp, NULL, (x)); \
+    debug_data((dx), bufp, (nx)); \
+    bufp += (nx); lenp -= (nx); \
+  } while(0)
 
 #define require_len(l) do { \
-	if (lenp < (l)) goto invval; \
-    } while(0)
+    if (lenp < (l)) goto invval; \
+  } while(0)
 
 #define read_int(x) do { \
-	require_len(4); \
-	(x) = (((unsigned int)bufp[0]) << 24) | (bufp[1] << 16) | (bufp[2] << 8) | bufp[3]; \
-	bufp += 4; lenp -= 4; \
-    } while(0)
+    require_len(4); \
+    (x) = (((unsigned int)bufp[0]) << 24) | (bufp[1] << 16) | (bufp[2] << 8) | bufp[3]; \
+    bufp += 4; lenp -= 4; \
+  } while(0)
 
 #define read_mpi(x) do { \
-	size_t mpilen; \
-	read_int(mpilen); \
-	if (mpilen) { \
-	    require_len(mpilen); \
-	    gcry_mpi_scan(&(x), GCRYMPI_FMT_USG, bufp, mpilen, NULL); \
-	} else { \
-	    (x) = gcry_mpi_set_ui(NULL, 0); \
-	} \
-	bufp += mpilen; lenp -= mpilen; \
-    } while(0)
+    size_t mpilen; \
+    read_int(mpilen); \
+    if (mpilen) { \
+      require_len(mpilen); \
+      gcry_mpi_scan(&(x), GCRYMPI_FMT_USG, bufp, mpilen, NULL); \
+    } else { \
+      (x) = gcry_mpi_set_ui(NULL, 0); \
+    } \
+    bufp += mpilen; lenp -= mpilen; \
+  } while(0)
 
 /* Write version and msg type into bufp*/
 #define write_header(version, msgtype) do { \
-	bufp[0] = 0x00; \
-        bufp[1] = version & 0xff; \
-        bufp[2] = msgtype; \
-        debug_data("Header", bufp, 3); \
-        bufp += 3; lenp -= 3; \
-    } while(0)
+    bufp[0] = 0x00; \
+    bufp[1] = version & 0xff; \
+    bufp[2] = msgtype; \
+    debug_data("Header", bufp, 3); \
+    bufp += 3; lenp -= 3; \
+  } while(0)
 
 /* Verify msg header is v1, v2 or v3 and has type x,
 *  increment bufp past msg header */
 #define skip_header(x) do { \
-        require_len(3); \
-        if ((bufp[0] != 0x00) || (bufp[2] != x)) \
-	    goto invval; \
-        if ((bufp[1] == 0x01) || (bufp[1] == 0x02) || \
-                (bufp[1] == 0x03)) { \
-	    bufp += 3; lenp -= 3; \
-	} else goto invval; \
-    } while(0)
+    require_len(3); \
+    if ((bufp[0] != 0x00) || (bufp[2] != x)) \
+      goto invval; \
+    if ((bufp[1] == 0x01) || (bufp[1] == 0x02) || \
+        (bufp[1] == 0x03)) { \
+      bufp += 3; lenp -= 3; \
+    } else goto invval; \
+  } while(0)
 
 #endif

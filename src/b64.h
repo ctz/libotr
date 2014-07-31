@@ -31,8 +31,8 @@
 /* An encoded block of length encoded_len can turn into a maximum of
  * this many decoded bytes: */
 #define OTRL_B64_MAX_DECODED_SIZE(encoded_len) \
-    (((encoded_len + OTRL_B64_ENCODED_LEN - 1) / OTRL_B64_ENCODED_LEN) \
-	* OTRL_B64_DECODED_LEN)
+  (((encoded_len + OTRL_B64_ENCODED_LEN - 1) / OTRL_B64_ENCODED_LEN) \
+   * OTRL_B64_DECODED_LEN)
 
 /*
  * base64 encode data.  Insert no linebreaks or whitespace.
@@ -41,7 +41,7 @@
  * space.  This function will return the number of bytes actually used.
  */
 size_t otrl_base64_encode(char *base64data, const unsigned char *data,
-	size_t datalen);
+                          size_t datalen);
 
 /*
  * base64 decode data.  Skip non-base64 chars, and terminate at the
@@ -52,7 +52,7 @@ size_t otrl_base64_encode(char *base64data, const unsigned char *data,
  * used.
  */
 size_t otrl_base64_decode(unsigned char *data, const char *base64data,
-	size_t base64len);
+                          size_t base64len);
 
 /*
  * Base64-encode a block of data, stick "?OTR:" and "." around it, and
@@ -67,6 +67,6 @@ char *otrl_base64_otr_encode(const unsigned char *buf, size_t buflen);
  * memory error, or -2 on invalid input.
  */
 int otrl_base64_otr_decode(const char *msg, unsigned char **bufp,
-	size_t *lenp);
+                           size_t *lenp);
 
 #endif

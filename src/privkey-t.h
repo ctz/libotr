@@ -24,15 +24,15 @@
 #include <gcrypt.h>
 
 typedef struct s_OtrlPrivKey {
-    struct s_OtrlPrivKey *next;
-    struct s_OtrlPrivKey **tous;
+  struct s_OtrlPrivKey *next;
+  struct s_OtrlPrivKey **tous;
 
-    char *accountname;
-    char *protocol;
-    unsigned short pubkey_type;
-    gcry_sexp_t privkey;
-    unsigned char *pubkey_data;
-    size_t pubkey_datalen;
+  char *accountname;
+  char *protocol;
+  unsigned short pubkey_type;
+  gcry_sexp_t privkey;
+  unsigned char *pubkey_data;
+  size_t pubkey_datalen;
 } OtrlPrivKey;
 
 #define OTRL_PUBKEY_TYPE_DSA 0x0000
@@ -40,11 +40,11 @@ typedef struct s_OtrlPrivKey {
 /* The list of privkeys currently being constructed, possibly in a
  * background thread */
 typedef struct s_OtrlPendingPrivKey {
-    struct s_OtrlPendingPrivKey *next;
-    struct s_OtrlPendingPrivKey **tous;
+  struct s_OtrlPendingPrivKey *next;
+  struct s_OtrlPendingPrivKey **tous;
 
-    char *accountname;
-    char *protocol;
+  char *accountname;
+  char *protocol;
 } OtrlPendingPrivKey;
 
 #endif

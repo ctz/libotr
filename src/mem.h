@@ -29,6 +29,6 @@ void otrl_mem_init(void);
  * blocks, but not their contents.  Returns 1 if they differ, 0 if they
  * are the same. */
 int otrl_mem_differ(const unsigned char *buf1, const unsigned char *buf2,
-    size_t len);
+                    size_t len);
 
 #endif

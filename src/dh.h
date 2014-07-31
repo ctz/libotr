@@ -24,30 +24,30 @@
 #define DH1536_GROUP_ID 5
 
 typedef struct {
-    unsigned int groupid;
-    gcry_mpi_t priv, pub;
+  unsigned int groupid;
+  gcry_mpi_t priv, pub;
 } DH_keypair;
 
 /* Which half of the secure session id should be shown in bold? */
 typedef enum {
-    OTRL_SESSIONID_FIRST_HALF_BOLD,
-    OTRL_SESSIONID_SECOND_HALF_BOLD
+  OTRL_SESSIONID_FIRST_HALF_BOLD,
+  OTRL_SESSIONID_SECOND_HALF_BOLD
 } OtrlSessionIdHalf;
 
 #define OTRL_EXTRAKEY_BYTES 32
 
 typedef struct {
-    unsigned char sendctr[16];
-    unsigned char rcvctr[16];
-    gcry_cipher_hd_t sendenc;
-    gcry_cipher_hd_t rcvenc;
-    gcry_md_hd_t sendmac;
-    unsigned char sendmackey[20];
-    int sendmacused;
-    gcry_md_hd_t rcvmac;
-    unsigned char rcvmackey[20];
-    int rcvmacused;
-    unsigned char extrakey[OTRL_EXTRAKEY_BYTES];
+  unsigned char sendctr[16];
+  unsigned char rcvctr[16];
+  gcry_cipher_hd_t sendenc;
+  gcry_cipher_hd_t rcvenc;
+  gcry_md_hd_t sendmac;
+  unsigned char sendmackey[20];
+  int sendmacused;
+  gcry_md_hd_t rcvmac;
+  unsigned char rcvmackey[20];
+  int rcvmacused;
+  unsigned char extrakey[OTRL_EXTRAKEY_BYTES];
 } DH_sesskeys;
 
 /*
@@ -82,25 +82,25 @@ gcry_error_t otrl_dh_gen_keypair(unsigned int groupid, DH_keypair *kp);
  * key.
  */
 gcry_error_t otrl_dh_session(DH_sesskeys *sess, const DH_keypair *kp,
-	gcry_mpi_t y);
+                             gcry_mpi_t y);
 
 /*
  * Compute the secure session id, two encryption keys, and four MAC keys
  * given our DH key and their DH public key.
  */
 gcry_error_t otrl_dh_compute_v2_auth_keys(const DH_keypair *our_dh,
-	gcry_mpi_t their_pub, unsigned char *sessionid, size_t *sessionidlenp,
-	gcry_cipher_hd_t *enc_c, gcry_cipher_hd_t *enc_cp,
-	gcry_md_hd_t *mac_m1, gcry_md_hd_t *mac_m1p,
-	gcry_md_hd_t *mac_m2, gcry_md_hd_t *mac_m2p);
+    gcry_mpi_t their_pub, unsigned char *sessionid, size_t *sessionidlenp,
+    gcry_cipher_hd_t *enc_c, gcry_cipher_hd_t *enc_cp,
+    gcry_md_hd_t *mac_m1, gcry_md_hd_t *mac_m1p,
+    gcry_md_hd_t *mac_m2, gcry_md_hd_t *mac_m2p);
 
 /*
  * Compute the secure session id, given our DH key and their DH public
  * key.
  */
 gcry_error_t otrl_dh_compute_v1_session_id(const DH_keypair *our_dh,
-	gcry_mpi_t their_pub, unsigned char *sessionid, size_t *sessionidlenp,
-	OtrlSessionIdHalf *halfp);
+    gcry_mpi_t their_pub, unsigned char *sessionid, size_t *sessionidlenp,
+    OtrlSessionIdHalf *halfp);
 
 /*
  * Deallocate the contents of a DH_sesskeys (but not the DH_sesskeys

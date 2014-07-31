@@ -27,25 +27,25 @@
 #define SM_DIGEST_SIZE 32
 
 typedef enum {
-    OTRL_SMP_EXPECT1,
-    OTRL_SMP_EXPECT2,
-    OTRL_SMP_EXPECT3,
-    OTRL_SMP_EXPECT4,
-    OTRL_SMP_EXPECT5
+  OTRL_SMP_EXPECT1,
+  OTRL_SMP_EXPECT2,
+  OTRL_SMP_EXPECT3,
+  OTRL_SMP_EXPECT4,
+  OTRL_SMP_EXPECT5
 } NextExpectedSMP;
 
 typedef enum {
-    OTRL_SMP_PROG_OK = 0,            /* All is going fine so far */
-    OTRL_SMP_PROG_CHEATED = -2,      /* Some verification failed */
-    OTRL_SMP_PROG_FAILED = -1,       /* The secrets didn't match */
-    OTRL_SMP_PROG_SUCCEEDED = 1      /* The SMP completed successfully */
+  OTRL_SMP_PROG_OK = 0,            /* All is going fine so far */
+  OTRL_SMP_PROG_CHEATED = -2,      /* Some verification failed */
+  OTRL_SMP_PROG_FAILED = -1,       /* The secrets didn't match */
+  OTRL_SMP_PROG_SUCCEEDED = 1      /* The SMP completed successfully */
 } OtrlSMProgState;
 
 typedef struct {
-    gcry_mpi_t secret, x2, x3, g1, g2, g3, g3o, p, q, pab, qab;
-    NextExpectedSMP nextExpected;
-    int received_question;  /* 1 if we received a question in an SMP1Q TLV */
-    OtrlSMProgState sm_prog_state;
+  gcry_mpi_t secret, x2, x3, g1, g2, g3, g3o, p, q, pab, qab;
+  NextExpectedSMP nextExpected;
+  int received_question;  /* 1 if we received a question in an SMP1Q TLV */
+  OtrlSMProgState sm_prog_state;
 } OtrlSMState;
 
 typedef OtrlSMState OtrlSMAliceState;

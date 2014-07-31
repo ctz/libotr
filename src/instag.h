@@ -38,12 +38,12 @@ typedef unsigned int otrl_instag_t;
 
 /* The list of instance tags used for our accounts */
 typedef struct s_OtrlInsTag {
-    struct s_OtrlInsTag *next;
-    struct s_OtrlInsTag **tous;
+  struct s_OtrlInsTag *next;
+  struct s_OtrlInsTag **tous;
 
-    char *accountname;
-    char *protocol;
-    otrl_instag_t instag;
+  char *accountname;
+  char *protocol;
+  otrl_instag_t instag;
 } OtrlInsTag;
 
 #include "userstate.h"
@@ -57,7 +57,7 @@ void otrl_instag_forget_all(OtrlUserState us);
 /* Fetch the instance tag from the given OtrlUserState associated with
  * the given account */
 OtrlInsTag * otrl_instag_find(OtrlUserState us, const char *accountname,
-	const char *protocol);
+                              const char *protocol);
 
 /* Read our instance tag from a file on disk into the given
  * OtrlUserState. */
@@ -72,12 +72,12 @@ otrl_instag_t otrl_instag_get_new();
 
 /* Get a new instance tag for the given account and write to file*/
 gcry_error_t otrl_instag_generate(OtrlUserState us, const char *filename,
-	const char *accountname, const char *protocol);
+                                  const char *accountname, const char *protocol);
 
 /* Get a new instance tag for the given account and write to file
  * The FILE* must be open for writing. */
 gcry_error_t otrl_instag_generate_FILEp(OtrlUserState us, FILE *instf,
-	const char *accountname, const char *protocol);
+                                        const char *accountname, const char *protocol);
 
 /* Write our instance tags to a file on disk. */
 gcry_error_t otrl_instag_write(OtrlUserState us, const char *filename);

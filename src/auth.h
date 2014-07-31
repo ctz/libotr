@@ -27,57 +27,57 @@
 
 
 typedef enum {
-    OTRL_AUTHSTATE_NONE,
-    OTRL_AUTHSTATE_AWAITING_DHKEY,
-    OTRL_AUTHSTATE_AWAITING_REVEALSIG,
-    OTRL_AUTHSTATE_AWAITING_SIG,
-    OTRL_AUTHSTATE_V1_SETUP
+  OTRL_AUTHSTATE_NONE,
+  OTRL_AUTHSTATE_AWAITING_DHKEY,
+  OTRL_AUTHSTATE_AWAITING_REVEALSIG,
+  OTRL_AUTHSTATE_AWAITING_SIG,
+  OTRL_AUTHSTATE_V1_SETUP
 } OtrlAuthState;
 
 typedef struct {
-    OtrlAuthState authstate;              /* Our state */
+  OtrlAuthState authstate;              /* Our state */
 
-    struct context *context;              /* The context which points to us */
+  struct context *context;              /* The context which points to us */
 
-    DH_keypair our_dh;                    /* Our D-H key */
-    unsigned int our_keyid;               /* ...and its keyid */
+  DH_keypair our_dh;                    /* Our D-H key */
+  unsigned int our_keyid;               /* ...and its keyid */
 
-    unsigned char *encgx;                 /* The encrypted value of g^x */
-    size_t encgx_len;                     /*  ...and its length */
-    unsigned char r[16];                  /* The encryption key */
+  unsigned char *encgx;                 /* The encrypted value of g^x */
+  size_t encgx_len;                     /*  ...and its length */
+  unsigned char r[16];                  /* The encryption key */
 
-    unsigned char hashgx[32];             /* SHA256(g^x) */
+  unsigned char hashgx[32];             /* SHA256(g^x) */
 
-    gcry_mpi_t their_pub;                 /* Their D-H public key */
-    unsigned int their_keyid;             /*  ...and its keyid */
+  gcry_mpi_t their_pub;                 /* Their D-H public key */
+  unsigned int their_keyid;             /*  ...and its keyid */
 
 
-    gcry_cipher_hd_t enc_c, enc_cp;       /* c and c' encryption keys */
-    gcry_md_hd_t mac_m1, mac_m1p;         /* m1 and m1' MAC keys */
-    gcry_md_hd_t mac_m2, mac_m2p;         /* m2 and m2' MAC keys */
+  gcry_cipher_hd_t enc_c, enc_cp;       /* c and c' encryption keys */
+  gcry_md_hd_t mac_m1, mac_m1p;         /* m1 and m1' MAC keys */
+  gcry_md_hd_t mac_m2, mac_m2p;         /* m2 and m2' MAC keys */
 
-    unsigned char their_fingerprint[20];  /* The fingerprint of their
+  unsigned char their_fingerprint[20];  /* The fingerprint of their
 					     long-term signing key */
 
-    int initiated;                        /* Did we initiate this
+  int initiated;                        /* Did we initiate this
 					     authentication? */
 
-    unsigned int protocol_version;        /* The protocol version number
+  unsigned int protocol_version;        /* The protocol version number
 					     used to authenticate. */
 
-    unsigned char secure_session_id[20];  /* The secure session id */
-    size_t secure_session_id_len;         /* And its actual length,
+  unsigned char secure_session_id[20];  /* The secure session id */
+  size_t secure_session_id_len;         /* And its actual length,
 					     which may be either 20 (for
 					     v1) or 8 (for v2) */
-    OtrlSessionIdHalf session_id_half;    /* Which half of the session
+  OtrlSessionIdHalf session_id_half;    /* Which half of the session
 					     id gets shown in bold */
 
-    char *lastauthmsg;                    /* The last auth message
+  char *lastauthmsg;                    /* The last auth message
 					     (base-64 encoded) we sent,
 					     in case we need to
 					     retransmit it. */
 
-    time_t commit_sent_time;              /* The time we last sent the
+  time_t commit_sent_time;              /* The time we last sent the
                                              lastauthmsg, if it was a
 					     COMMIT message, and this is
 					     a master context.  0
@@ -109,7 +109,7 @@ gcry_error_t otrl_auth_start_v23(OtrlAuthInfo *auth, int version);
  * keypair to use.
  */
 gcry_error_t otrl_auth_handle_commit(OtrlAuthInfo *auth,
-	const char *commitmsg, int version);
+                                     const char *commitmsg, int version);
 
 /*
  * Handle an incoming D-H Key Message.  If no error is returned, and
@@ -117,7 +117,7 @@ gcry_error_t otrl_auth_handle_commit(OtrlAuthInfo *auth,
  * Use the given private authentication key to sign messages.
  */
 gcry_error_t otrl_auth_handle_key(OtrlAuthInfo *auth, const char *keymsg,
-	int *havemsgp, OtrlPrivKey *privkey);
+                                  int *havemsgp, OtrlPrivKey *privkey);
 
 /*
  * Handle an incoming Reveal Signature Message.  If no error is
@@ -127,9 +127,9 @@ gcry_error_t otrl_auth_handle_key(OtrlAuthInfo *auth, const char *keymsg,
  * successful.
  */
 gcry_error_t otrl_auth_handle_revealsig(OtrlAuthInfo *auth,
-	const char *revealmsg, int *havemsgp, OtrlPrivKey *privkey,
-	gcry_error_t (*auth_succeeded)(const OtrlAuthInfo *auth, void *asdata),
-	void *asdata);
+                                        const char *revealmsg, int *havemsgp, OtrlPrivKey *privkey,
+                                        gcry_error_t (*auth_succeeded)(const OtrlAuthInfo *auth, void *asdata),
+                                        void *asdata);
 
 /*
  * Handle an incoming Signature Message.  If no error is returned, and
@@ -138,9 +138,9 @@ gcry_error_t otrl_auth_handle_revealsig(OtrlAuthInfo *auth,
  * authentication is successful.
  */
 gcry_error_t otrl_auth_handle_signature(OtrlAuthInfo *auth,
-	const char *sigmsg, int *havemsgp,
-	gcry_error_t (*auth_succeeded)(const OtrlAuthInfo *auth, void *asdata),
-	void *asdata);
+                                        const char *sigmsg, int *havemsgp,
+                                        gcry_error_t (*auth_succeeded)(const OtrlAuthInfo *auth, void *asdata),
+                                        void *asdata);
 
 /*
  * Start a fresh AKE (version 1) using the given OtrlAuthInfo.  If
@@ -150,7 +150,7 @@ gcry_error_t otrl_auth_handle_signature(OtrlAuthInfo *auth,
  * transmit will be contained in auth->lastauthmsg.
  */
 gcry_error_t otrl_auth_start_v1(OtrlAuthInfo *auth, DH_keypair *our_dh,
-	unsigned int our_keyid, OtrlPrivKey *privkey);
+                                unsigned int our_keyid, OtrlPrivKey *privkey);
 
 /*
  * Handle an incoming v1 Key Exchange Message.  If no error is returned,
@@ -161,10 +161,10 @@ gcry_error_t otrl_auth_start_v1(OtrlAuthInfo *auth, DH_keypair *our_dh,
  * the given keyid.
  */
 gcry_error_t otrl_auth_handle_v1_key_exchange(OtrlAuthInfo *auth,
-	const char *keyexchmsg, int *havemsgp, OtrlPrivKey *privkey,
-	DH_keypair *our_dh, unsigned int our_keyid,
-	gcry_error_t (*auth_succeeded)(const OtrlAuthInfo *auth, void *asdata),
-	void *asdata);
+    const char *keyexchmsg, int *havemsgp, OtrlPrivKey *privkey,
+    DH_keypair *our_dh, unsigned int our_keyid,
+    gcry_error_t (*auth_succeeded)(const OtrlAuthInfo *auth, void *asdata),
+    void *asdata);
 
 /*
  * Copy relevant information from the master OtrlAuthInfo to an
