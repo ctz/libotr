@@ -1,0 +1,13 @@
+auth.c:
+
+72 + 103: pretty much unmaintainable: start with memset, then fill in special members?
+1484: if (ptr) free(ptr) is silly
+1485: malloc can return NULL
+
+b64.c:
+
+202: impractical: integer overflow if buflen >= 0xbffffffb for 32-bit size_t,
+     followed by heap overflow. assert?
+202: there are defines for OTRL_B64_DECODED_LEN and OTRL_B64_ENCODED_LEN
+202: in fact, consider OTRL_B64_MAX_ENCODED_SIZE cf. OTRL_B64_MAX_DECODED_SIZE?
+
