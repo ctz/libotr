@@ -11,3 +11,36 @@ b64.c:
 202: there are defines for OTRL_B64_DECODED_LEN and OTRL_B64_ENCODED_LEN
 202: in fact, consider OTRL_B64_MAX_ENCODED_SIZE cf. OTRL_B64_MAX_DECODED_SIZE?
 
+context.c:
+
+130: use of assert(3) to check malloc success, again at 140
+132: strdup(3) can fail, but other users of this structure (otrl_context_find, etc.)
+     aren't happy for these string members to be NULL.  again at 133 for accountname,
+     134 for protocol.
+
+context_priv.c:
+
+32: like the function in auth.c, this is pretty grot.
+36: malloc checked with assert
+70: grot
+
+dh.c:
+
+131: code is currently correct, but setting the unused error code to 'success' is
+     hazardous if future code does 'goto err' without writing err.
+151 + 269 + 394: this construction keeps happening. refactor?
+
+instag.c:
+
+36 + 37: if (ptr) free(ptr)
+93 + 207: it seems strange to report GPG_ERR_NO_ERROR here. GPG_ERR_INV_VALUE perhaps?
+          either that, or mention in the function docs that it can report success and do
+          nothing if called incorrectly.
+
+mem.c:
+75: i'm surprised that anything is happy with a free(3) replacement which will segfault
+    on free(NULL).
+88: general worries about compilers removing these memsets, based on lack of reads and
+    subsequent free meaning there cannot be any active aliases.
+88-91: doing it four times is bananas.
+
