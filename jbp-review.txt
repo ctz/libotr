@@ -43,4 +43,65 @@ mem.c:
 88: general worries about compilers removing these memsets, based on lack of reads and
     subsequent free meaning there cannot be any active aliases.
 88-91: doing it four times is bananas.
+127-130: again, four times.
+- for the above 3 issues, i suggest introducing a
+  void otrl_mem_clear(volatile void *ptr, size_t len)
 
+message.c:
+this file contains a ton of manual string manipulation.  consider having a dynamic string
+abstraction instead.  Even asprintf would be a dramatic improvement.
+
+83: strlen returns size_t, not int.  this and the fragment_count calculation will go
+    badly wrong for huge messages.
+90: this calculation is opaque, and appears elsewhere (proto.c:1018).
+104 + 116 + 132: multiple unchecked strdups.  notably, this function's caller returns
+GPG_ERR_ENOMEM in the same case.  I guess this will cause messages to go missing under
+memory pressure.
+292: error swept under rug if otrl_proto_default_query_msg fails.
+330: error swept under rug if otrl_proto_default_query_msg fails.
+751: unchecked malloc
+780: another impractical integer underflow. smpmsglen is the wrong type for a length,
+     so will be < 0 if very large. that will make this allocation too small for the
+     subsequent strcpy/memmove.
+874: impractical integer overflow if strlen(OTR_ERROR_PREFIX) + strlen(err_msg) + 1 > SIZE_MAX
+922: this is a single 951 line function.
+1964: unchecked malloc
+1964: integer overflow if usedatalen > SIZE_MAX - 4
+
+privkey.c:
+383+384: if strdup fail here we continue to insert the new item into the pending list, which will
+         fail in pending_find.
+431: unchecked fprintf, could lead to lost key material if (eg) out of disk
+437+457: again
+490: unchecked malloc
+491+492: unchecked strdup
+532: for extra points on windows here, we could CreateFile/_open_osfhandle/_fdopen to get similar
+     file permissions behaviour.
+803+806+808: unchecked fprintf
+882-901: no error handling whatsoever in this block of calls
+
+proto.c:
+254: unchecked malloc (of a constant size, use stack?)
+277: extremely impractical integer overflow
+466: unchecked malloc (of a constant size, use stack?)
+
+sm.c:
+295: unchecked malloc
+342: unchecked malloc
+383: unchecked malloc
+
+tlv.c:
+32+36: mallocs checked by assert
+
+userstate.c:
+52: otrl_userstate_free is allergic to NULL userstate via otrl_context_forget_all,
+    which is a shame because that's otrl_userstate_create's error handling mechanism.
+
+    This is made worse by hiding the fact that this is a pointer type behind a
+    typedef, and not documentating that it can be NULL, and not doing any check
+    in any of the tests/example code (which invariably get copied into application
+    code).
+
+    It's unlikely to be a problem here because otrl_userstate_create tends to get
+    called once, early on, and isn't generally going to encounter an allocation
+    failure.
